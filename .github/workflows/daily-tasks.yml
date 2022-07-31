@@ -9,9 +9,20 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            let response_participants = await github.request('https://api.github.com/search/repositories?q=topic:AI-Tournaments+topic:AI-Tournaments-Participant').then(response => response.json());
-            console.log(response_participants);
             let querys = [];
+            
+            let response_total = await github.request('https://api.github.com/search/repositories?q=topic:AI-Tournaments+topic:AI-Tournaments-Participant').then(response => response.json());
+            console.log(response_total);
+            querys.push({
+              query: 'AI-Tournaments_total',
+              result: response_total.items.length
+            });
+            querys.push({
+              query: 'AI-Tournaments_totalExclusive',
+              result: response_total.items.filter(repo => repo.owner.login.id !== 15955091 && repo.owner.login !== 'AI-Tournaments').length
+            });
+            
+            let response_participants = await github.request('https://api.github.com/search/repositories?q=topic:AI-Tournaments+topic:AI-Tournaments-Participant').then(response => response.json());
             querys.push({
               query: 'participants',
               result: response_participants.items.filter(repo => !repo.topics.includes('ai-tournaments-retired')).length
@@ -32,7 +43,27 @@ jobs:
             });
             querys.push({
               query: 'arenasExclusive',
-              result: response_arenas.items.filter(repo => repo.owner.login.id !== 15955091 && repo.owner.login !== 'AI-Tournaments')).length
+              result: response_arenas.items.filter(repo => repo.owner.login.id !== 15955091 && repo.owner.login !== 'AI-Tournaments').length
+            });
+            
+            let response_replays = await github.request('https://api.github.com/search/repositories?q=topic:AI-Tournaments+topic:AI-Tournaments-Replay').then(response => response.json());
+            querys.push({
+              query: 'replays',
+              result: response_replays.items.length
+            });
+            querys.push({
+              query: 'replays',
+              result: response_replays.items.length
+            });
+            
+            let response_interfaces = await github.request('https://api.github.com/search/repositories?q=topic:AI-Tournaments-Interface').then(response => response.json());
+            querys.push({
+              query: 'interfacesExclusive',
+              result: response_interfaces.items.filter(repo => repo.owner.login.id !== 15955091 && repo.owner.login !== 'AI-Tournaments').length
+            });
+            querys.push({
+              query: 'replaysExclusive',
+              result: response_interfaces.items.filter(repo => repo.owner.login.id !== 15955091 && repo.owner.login !== 'AI-Tournaments').length
             });
             
             // Post results
