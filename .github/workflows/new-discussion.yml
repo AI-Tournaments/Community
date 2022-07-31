@@ -1,10 +1,10 @@
-name: spread-github-announcements
+name: new-discussion
 on:
   discussion:
     types: [created]
 jobs:
   spread-github-announcements:
-    if: context.payload.discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
+    if: payload.discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
     runs-on: ubuntu-latest
     steps:
       - name: Compile message
