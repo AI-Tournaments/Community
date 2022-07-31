@@ -8,10 +8,11 @@ jobs:
     steps:
       - uses: actions/github-script@v6
         with:
+          DISCORD_ANNOUNCEMENTWEBHOOK: ${{ secrets.DISCORD_ANNOUNCEMENTWEBHOOK }}
           script: |
             const discussion = context.payload.discussion
             const isAnnouncement = discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
-            const discordAnnouncementWebhook = secrets.DISCORD_ANNOUNCEMENTWEBHOOK
+            const discordAnnouncementWebhook = DISCORD_ANNOUNCEMENTWEBHOOK
 
             if(isAnnouncement && discordAnnouncementWebhook){
               fetch(new Request(discordAnnouncementWebhook, {
