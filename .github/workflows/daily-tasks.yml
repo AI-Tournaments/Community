@@ -1,0 +1,42 @@
+name: Daily tasks
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+jobs:
+  usage-query:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            let response_participants = await github.request('https://api.github.com/search/repositories?q=topic:AI-Tournaments+topic:AI-Tournaments-Participant').then(response => response.json());
+            console.log(response_participants);
+            let querys = [];
+            querys.push({
+              query: 'participants',
+              result: response_participants.items.filter(repo => !repo.topics.includes('ai-tournaments-retired')).length
+            });
+            querys.push({
+              query: 'participantsExclusive',
+              result: response_participants.items.filter(repo => !repo.topics.includes('ai-tournaments-retired') && repo.owner.login.id !== 15955091).length
+            });
+            querys.push({
+              query: 'retiredParticipants',
+              result: response_participants.items.filter(repo => repo.topics.includes('ai-tournaments-retired')).length
+            });
+
+            let response_arenas = await github.request('https://api.github.com/search/repositories?q=topic:AI-Tournaments+topic:AI-Tournaments-Arena-v1').then(response => response.json());
+            querys.push({
+              query: 'arenas',
+              result: response_arenas.items.length
+            });
+            querys.push({
+              query: 'arenasExclusive',
+              result: response_arenas.items.filter(repo => repo.owner.login.id !== 15955091 && repo.owner.login !== 'AI-Tournaments')).length
+            });
+            
+            // Post results
+            querys.forEach(q => {
+              github.request('https://docs.google.com/forms/d/e/'+process.env.GOOGLE_FORM_ID+'/formResponse?usp=pp_url&entry.656137185='+q.query+'&entry.1774239880='+q.result);
+            });
