@@ -6,11 +6,12 @@ jobs:
   spread:
     runs-on: ubuntu-latest
     steps:
-      - name: CompileMessage
+      - name: Compile message
+        id: CompileMessage
         uses: actions/github-script@v6
         with:
           result-encoding: string
-          script: return 'test'
+          script: |
             const discussion = context.payload.discussion
             const isAnnouncement = discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
             let announcement
@@ -25,7 +26,7 @@ jobs:
             }
       - name: Get result (test)
         run: echo "${{steps.CompileMessage.outputs.result}}"
-      - name: SpreadMessage
+      - name: Spread message
         uses: fjogeleit/http-request-action@v1
         with:
           url: '${{ secrets.DISCORD_ANNOUNCEMENTWEBHOOK }}'
