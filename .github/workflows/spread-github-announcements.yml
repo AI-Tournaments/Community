@@ -10,7 +10,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           result-encoding: string
-          script: |
+          script:
             const discussion = context.payload.discussion
             const isAnnouncement = discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
             if(!isAnnouncement){
