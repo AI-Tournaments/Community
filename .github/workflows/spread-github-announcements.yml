@@ -14,18 +14,10 @@ jobs:
           script: |
             const discussion = context.payload.discussion
             const isAnnouncement = discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
-            let announcement
             if(isAnnouncement){
-              announcement = '['+discussion.title+']('+discussion.html_url+')'
+              return '['+discussion.title+']('+discussion.html_url+')'
             }
-            console.log(announcement)
-            if(announcement){
-              return announcement
-            }else{
-              throw 'Invalid call'
-            }
-      - name: Get result (test)
-        run: echo "${{steps.CompileMessage.outputs.result}}"
+            throw 'Invalid call'
       - name: Spread message
         uses: fjogeleit/http-request-action@v1
         with:
