@@ -4,7 +4,7 @@ on:
     types: [created]
 jobs:
   spread-github-announcements:
-    if: payload.discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
+    if: discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
     runs-on: ubuntu-latest
     steps:
       - name: Compile message
