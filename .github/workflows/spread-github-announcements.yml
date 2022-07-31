@@ -10,13 +10,19 @@ jobs:
         uses: actions/github-script@v6
         with:
           result-encoding: string
-          script:
+          script: |
             const discussion = context.payload.discussion
             const isAnnouncement = discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
-            if(!isAnnouncement){
-                throw 'Invalid call'
+            let announcement
+            if(isAnnouncement){
+              announcement = '['+discussion.title+']('+discussion.html_url+')'
             }
-            return '['+discussion.title+']('+discussion.html_url+')'
+            console.log(announcement)
+            if(announcement){
+              return announcement
+            }else{
+              throw 'Invalid call'
+            }
       - name: Get result (test)
         run: echo "${{steps.CompileMessage.outputs.result}}"
       - name: SpreadMessage
