@@ -1,4 +1,4 @@
-name: new-discussion
+name: New dscussion
 on:
   discussion:
     types: [created]
