@@ -13,9 +13,8 @@ jobs:
           script: |
             const discussion = context.payload.discussion
             const isAnnouncement = discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
-            throw new Error('test')
             if(!isAnnouncement){
-                throw new Error('Invalid call')
+                throw 'Invalid call'
             }
             return '['+discussion.title+']('+discussion.html_url+')'
       - name: Get result (test)
