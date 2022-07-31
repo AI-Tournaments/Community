@@ -15,7 +15,8 @@ jobs:
             if(isAnnouncement){
                 return '['+discussion.title+']('+discussion.html_url+')'
             }
-            throw 'Invalid call'
+            throw new Error('Invalid call')
+          result-encoding: string
       - name: SpreadMessage
         uses: fjogeleit/http-request-action@v1
         with:
