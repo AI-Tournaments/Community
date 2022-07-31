@@ -6,26 +6,20 @@ jobs:
   spread:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v6
-        env:
-          DISCORD_ANNOUNCEMENTWEBHOOK: ${{ secrets.DISCORD_ANNOUNCEMENTWEBHOOK }}
+      - name: CompileMessage
+        uses: actions/github-script@v6
         with:
           script: |
             const discussion = context.payload.discussion
             const isAnnouncement = discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
-            const discordAnnouncementWebhook = process.env.DISCORD_ANNOUNCEMENTWEBHOOK
-
-            if(isAnnouncement && discordAnnouncementWebhook){
-              fetch(new Request(discordAnnouncementWebhook, {
-                method: 'POST',
-                headers: new Headers({
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-                }),
-                body: JSON.stringify({
-                  content: '['+discussion.title+']('+discussion.html_url+')'
-                })
-              }))
+            if(isAnnouncement){
+                return '['+discussion.title+']('+discussion.html_url+')'
             }
-
-            return new Response(null, {headers: {...headers}})
+            throw 'Invalid call'
+      - name: SpreadMessage
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: '${{ secrets.DISCORD_ANNOUNCEMENTWEBHOOK }}'
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"content": "${{steps.CompileMessage.outputs.result}}"}'
