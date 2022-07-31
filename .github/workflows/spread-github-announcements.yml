@@ -9,14 +9,15 @@ jobs:
       - name: CompileMessage
         uses: actions/github-script@v6
         with:
+          result-encoding: string
           script: |
             const discussion = context.payload.discussion
             const isAnnouncement = discussion.category.node_id === 'DIC_kwDOF2FhEs4CQX_F'
             if(isAnnouncement){
+                console.log('['+discussion.title+']('+discussion.html_url+')')
                 return '['+discussion.title+']('+discussion.html_url+')'
             }
             throw new Error('Invalid call')
-          result-encoding: string
       - name: SpreadMessage
         uses: fjogeleit/http-request-action@v1
         with:
